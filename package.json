@@ -1,0 +1,31 @@
+{
+  "name": "vue3-scroll-border",
+  "version": "0.1.0",
+  "description": "Infinite scroll border component",
+  "main": "index.js",
+  "module": "index.mjs",
+  "workspaces": [
+    "test-app"
+  ],
+  "scripts": {
+    "test": "NODE_ENV=test tape tests/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MLaszczewski/vue3-scroll-border.git"
+  },
+  "author": {
+    "email": "michal@laszczewski.com",
+    "name": "Michał Łaszczewski",
+    "url": "https://www.viamage.com/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MLaszczewski/vue3-scroll-border/issues"
+  },
+  "homepage": "https://github.com/MLaszczewski/vue3-scroll-border",
+  "dependencies": {
+    "vue": "^3.2.16",
+    "@vueuse/core": "6.9.0"
+  }
+}
