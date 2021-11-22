@@ -23,12 +23,12 @@ const { load, drop, canLoad, canDrop, loadDelay, dropDelay, placement, loadSenso
     required: true
   },
   canLoad: {
-    type: Boolean,
-    default: true
+    type: Function,
+    default: () => true
   },
   canDrop: {
-    type: Boolean,
-    default: true
+    type: Function,
+    default: () => true
   },
   loadDelay: {
     type: Number,
@@ -54,7 +54,7 @@ const { load, drop, canLoad, canDrop, loadDelay, dropDelay, placement, loadSenso
 })
 
 import { useIntersectionObserver } from '@vueuse/core'
-import { reactive, ref, nextTick, computed, watch, onMounted } from "vue"
+import { reactive, ref, nextTick, computed, watch, onMounted, unref } from "vue"
 
 const emptyPlaces = reactive([])
 const emptyHeight = computed(() => emptyPlaces.reduce((a, b) => a + b, 0))
@@ -74,11 +74,13 @@ for(const sensorName of sensorNames) {
 const shouldDrop = () => !sensors.drop.visible.value && !sensors.empty.visible.value
 const shouldLoad = () => sensors.load.visible.value || sensors.empty.visible.value
 
+const lld = computed(() => canLoad() && shouldLoad())
+
 let timeout = null
 let loading = false
 
 async function loadLoop() {
-  if(!(shouldLoad() && (canLoad || emptyPlaces.length) && !loading)) return
+  if(!(shouldLoad() && (unref(canLoad) || emptyPlaces.length) && !loading)) return
   if(timeout) clearTimeout(timeout)
   if(canLoad) {
     loading = true
@@ -90,7 +92,7 @@ async function loadLoop() {
 }
 
 function dropLoop() {
-  if(!(shouldDrop() && canDrop)) return
+  if(!(shouldDrop() && unref(canDrop))) return
   if(timeout) clearTimeout(timeout)
   const height = drop()
   emptyPlaces.push(height || 0)
@@ -98,9 +100,14 @@ function dropLoop() {
 }
 
 onMounted(() => {
-  watch(() => shouldLoad(), (should) => should && loadLoop())
-  watch(() => shouldDrop(), (should) => should && dropLoop())
-
+  watch(() => (shouldLoad() && canLoad), (should) => {
+    //console.log("SHOULD LOAD", should)
+    if(should) loadLoop()
+  })
+  watch(() => shouldDrop(), (should) => {
+    //console.log("SHOULD DROP", should)
+    if(should) dropLoop()
+  })
   loadLoop()
 })
 
