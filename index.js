@@ -1,1 +1,2 @@
-module.exports = require('./lib/ScrollBorder.vue')
+import ScrollBorder from "./lib/ScrollBorder.vue"
+export default ScrollBorder
