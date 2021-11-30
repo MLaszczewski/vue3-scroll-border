@@ -1,8 +1,6 @@
 <template>
-  <InfiniteContent />
-  <div class="scroll-area">
-
-  </div>
+<!--  <InfiniteContent :reverse="true" />-->
+  <InfiniteContent :reverse="false" />
 </template>
 
 <script setup>
@@ -10,8 +8,6 @@
 import UnstableContentExperiment from "./components/UnstableContentExperiment.vue"
 import InfiniteContentExperiment from "./components/InfiniteContentExperiment.vue"
 import InfiniteContent from "./components/InfiniteContent.vue"
-
-
 
 </script>
 
@@ -44,10 +40,15 @@ html, body {
 .scroll-area {
   height: 100%;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   box-sizing: border-box;
   border: 1px solid black;
   display: flex;
+}
+.scroll-normal {
+  flex-direction: column;
+}
+.scroll-reverse {
   flex-direction: column-reverse;
 }
 

@@ -20,7 +20,7 @@ const { load, drop, canLoad, canDrop, loadDelay, dropDelay, placement, loadSenso
   },
   drop: {
     type: Function,
-    required: true
+    default: null
   },
   canLoad: {
     type: Function,
@@ -75,14 +75,17 @@ const shouldDrop = () => !sensors.drop.visible.value && !sensors.empty.visible.v
 const shouldLoad = () => sensors.load.visible.value || sensors.empty.visible.value
 
 const lld = computed(() => canLoad() && shouldLoad())
+const sl = computed(() => shouldLoad())
+const cl = computed(() => canLoad())
 
 let timeout = null
 let loading = false
 
 async function loadLoop() {
-  if(!(shouldLoad() && (unref(canLoad) || emptyPlaces.length) && !loading)) return
+  const loadable = canLoad() && load
+  if(!(shouldLoad() && (loadable || emptyPlaces.length) && !loading)) return
   if(timeout) clearTimeout(timeout)
-  if(canLoad) {
+  if(loadable) {
     loading = true
     await load()
     loading = false
@@ -92,7 +95,8 @@ async function loadLoop() {
 }
 
 function dropLoop() {
-  if(!(shouldDrop() && unref(canDrop))) return
+  const dropable = canDrop() && drop
+  if(!(shouldDrop() && dropable)) return
   if(timeout) clearTimeout(timeout)
   const height = drop()
   emptyPlaces.push(height || 0)
@@ -100,7 +104,7 @@ function dropLoop() {
 }
 
 onMounted(() => {
-  watch(() => (shouldLoad() && canLoad), (should) => {
+  watch(() => (shouldLoad() && canLoad()), (should) => {
     //console.log("SHOULD LOAD", should)
     if(should) loadLoop()
   })
@@ -113,10 +117,10 @@ onMounted(() => {
 
 function sensorStyle(placement, size) {
   switch(placement) {
-    case 'top': return { top: 0, height: size }
-    case 'bottom': return { bottom: 0, height: size }
-    case 'left': return { left: 0, width: size }
-    case 'right': return { right: 0, width: size }
+    case 'top': return { top: '0', height: size }
+    case 'bottom': return { bottom: '0', height: size }
+    case 'left': return { left: '0', width: size }
+    case 'right': return { right: '0', width: size }
   }
   throw new Error("unknown scroll-border placement " + placement)
 }
