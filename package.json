@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/MLaszczewski/vue3-scroll-border",
   "dependencies": {
-    "vue": "^3.2.21",
-    "@vueuse/core": "^6.8.0"
+    "vue": "^3.2.45",
+    "@vueuse/core": "^9.1.0"
   }
 }

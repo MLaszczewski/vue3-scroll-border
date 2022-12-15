@@ -1,14 +1,14 @@
 {
   "name": "test-app",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.16",
-    "@vueuse/core": "6.9.0"
+    "vue": "^3.2.45",
+    "@vueuse/core": "^9.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.3",
