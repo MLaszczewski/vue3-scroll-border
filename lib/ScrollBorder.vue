@@ -16,7 +16,7 @@
 const { load, drop, canLoad, canDrop, loadDelay, dropDelay, placement, loadSensorSize, dropSensorSize } = defineProps({
   load: {
     type: Function,
-    required: true
+    default: null
   },
   drop: {
     type: Function,
@@ -54,20 +54,22 @@ const { load, drop, canLoad, canDrop, loadDelay, dropDelay, placement, loadSenso
 })
 
 import { useIntersectionObserver } from '@vueuse/core'
-import { reactive, ref, nextTick, computed, watch, onMounted, unref } from "vue"
+import { reactive, ref, nextTick, computed, watch, onMounted, onUnmounted, unref } from "vue"
 
 const emptyPlaces = reactive([])
 const emptyHeight = computed(() => emptyPlaces.reduce((a, b) => a + b, 0))
 
 const sensorNames = ['load', 'drop', 'empty']
+
 const sensors = {}
 for(const sensorName of sensorNames) {
   const sensor = {
     element: ref(),
     visible: ref(true)
   }
-  useIntersectionObserver(sensor.element, ([{ isIntersecting }], observerElement) =>
-      sensor.visible.value = isIntersecting)
+  const { stop } = useIntersectionObserver(sensor.element, ([{ isIntersecting }], observerElement) =>
+    sensor.visible.value = isIntersecting)
+  sensor.stop = stop
   sensors[sensorName] = sensor
 }
 
@@ -104,15 +106,26 @@ function dropLoop() {
 }
 
 onMounted(() => {
-  watch(() => (shouldLoad() && canLoad()), (should) => {
-    //console.log("SHOULD LOAD", should)
-    if(should) loadLoop()
-  })
-  watch(() => shouldDrop(), (should) => {
-    //console.log("SHOULD DROP", should)
-    if(should) dropLoop()
-  })
-  loadLoop()
+  if(load) {
+    watch(() => (shouldLoad() && canLoad()), (should) => {
+      //console.log("SHOULD LOAD", should)
+      if(should) loadLoop()
+    })
+  }
+  if(drop) {
+    watch(() => shouldDrop(), (should) => {
+      if (should) dropLoop()
+    })
+  }
+  if(load) {
+    loadLoop()
+  }
+})
+
+onUnmounted(() => {
+  for(const sensorName of sensorNames) {
+    sensors[sensorName].stop()
+  }
 })
 
 function sensorStyle(placement, size) {
