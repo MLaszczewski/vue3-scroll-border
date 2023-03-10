@@ -1,6 +1,6 @@
 {
   "name": "vue3-scroll-border",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Inifinte scroll border component",
   "main": "index.js",
   "workspaces": [
