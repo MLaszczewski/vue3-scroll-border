@@ -3,9 +3,6 @@
   "version": "0.1.5",
   "description": "Inifinte scroll border component",
   "main": "index.js",
-  "workspaces": [
-    "test-app"
-  ],
   "scripts": {
     "test": "NODE_ENV=test tape tests/*"
   },
@@ -24,7 +21,7 @@
   },
   "homepage": "https://github.com/MLaszczewski/vue3-scroll-border",
   "dependencies": {
-    "vue": "^3.2.47",
-    "@vueuse/core": "^9.1.0"
+    "vue": "^3.4.19",
+    "@vueuse/core": "^10.7.2"
   }
 }
